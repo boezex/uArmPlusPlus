@@ -1,0 +1,1 @@
+./Debug/main.cpp.o ./Debug/up_src_uArm.cpp.o ./Debug/up_src_serial.cpp.o   

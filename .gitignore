@@ -328,3 +328,10 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/uArm.vcxproj.filters
+/uArm.vcxproj
+/uArm.sln
+/Robotarm.vcxproj.filters
+/Robotarm.vcxproj
+/Robotarm.sln
+/Makefile
