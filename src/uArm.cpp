@@ -19,11 +19,11 @@ void uArm::move2rest(){
 
 void uArm::calibreer() {
 	openClamp();
-	move(150, -100, 3, 20);
+	move(150, -100, -15, 20);
 	std::cout << "Positioneer de stift in de grijper, en druk op enter om verder te gaan";
 	std::cin.get();
 	closeClamp();
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	Sleep(2000);
 }
 
 
