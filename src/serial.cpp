@@ -63,8 +63,9 @@ Serial::Serial(const char *portName) {
 Serial::~Serial() {
     if (this->connected) {
         this->connected = false;
-        CloseHandle(this->hSerial);
-    }
+		//FindClose(this->hSerial);
+        // CloseHandle(this->hSerial);
+    }	
 }
 
 int Serial::readData(char *buffer, unsigned int size) {
@@ -162,7 +163,7 @@ Serial::~Serial() {
 }
 
 int Serial::readData(char *buffer, unsigned int size) {
-    char c;
+    char c = 'a';
     char response[1024];
     int i = 0;
 

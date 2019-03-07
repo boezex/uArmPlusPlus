@@ -12,6 +12,137 @@
 using namespace std;
 
 
+void moveDisk(uArm arm, int x, int toPosition, int fromPosition, int disk) {
+	int z = 0;
+	switch (disk) {
+	case (1): z = 10;
+	case (2): z = 20;
+	case (3): z = 30;
+	case (4): z = 40;
+	}
+	arm.move(x, fromPosition, 100, 20);
+	arm.move(x, fromPosition, z, 10);
+	arm.turnPumpON();
+	Sleep(2000);
+	arm.move(x, fromPosition, 100, 20);
+	arm.move(x, toPosition, 100, 20);
+	arm.turnPumpOFF();
+	Sleep(2000);
+	return;
+}
+
+
+vector<int> nieuweHoogtes(int from, int to, vector<int> & hoogtes) {
+	hoogtes[from - 1] -= 1;
+	hoogtes[to - 1] += 1;
+	return hoogtes;
+}
+
+
+void towerOfHanoi(uArm arm, int diskNumber, int from_stack, int to_stack, int other_stack, vector<int> & hoogtes) {
+	// 1 = left, 2 = middle, 3 = right
+	// left = 50, 2 = 0, 3 = -50
+	// 1 = 10, 2 = 20, 3 = 28, 4 = 38
+	int x = 200;
+	int yFrom = 0;
+	int yTo = 0;
+	int zFrom = 0;
+	int zTo = 8;
+
+	if (diskNumber == 1) {
+		cout << endl << "Move disk 1 from " << from_stack << " to " << to_stack;
+		// Move 
+
+
+		switch (hoogtes[from_stack - 1]) {
+		case (1): zFrom = 8; break;
+		case (2): zFrom = 18; break;
+		case (3): zFrom = 28; break;
+		case (4): zFrom = 38; break;
+		}
+		switch (hoogtes[to_stack - 1]) {
+		case (1): zTo = 20; break;
+		case (2): zTo = 30; break;
+		case (3): zTo = 40; break;
+		case (4): zTo = 50; break;
+		}
+		cout << from_stack << " " << to_stack << " " << diskNumber << endl;
+		switch (from_stack) {
+		case (1): yFrom = 50;  break;
+		case (2): yFrom = 0; break;
+		case (3): yFrom = -50; break;
+		}
+		switch (to_stack) {
+		case (1): yTo = 50; break;
+		case (2): yTo = 0; break;
+		case (3): yTo = -50; break;
+		}
+
+		cout << "Moving from " << yFrom << " to " << yTo << endl;
+		cout << "Stack from: " << hoogtes[from_stack - 1] << endl;
+		cout << "Stack to: " << hoogtes[to_stack - 1] << endl;
+		arm.move(x, yFrom, 100, 20);
+		arm.move(x, yFrom, zFrom, 10, 1);
+		arm.turnPumpON();
+		// Sleep(100);
+		arm.move(x, yFrom, 100, 20, 1);
+		arm.move(x, yTo, 100, 20);
+		arm.move(x, yTo, zTo, 10, 1);
+		arm.turnPumpOFF();
+		// Sleep(100);
+		arm.move(x, yTo, 100, 20);
+
+		hoogtes = nieuweHoogtes(from_stack, to_stack, hoogtes);
+		cout << endl << "Returning";
+		return;
+	}
+	cout << endl << "New recursion";
+	towerOfHanoi(arm, diskNumber - 1, from_stack, other_stack, to_stack, hoogtes);
+	// Move
+
+	switch (hoogtes[from_stack - 1]) {
+	case (1): zFrom = 8; break;
+	case (2): zFrom = 18; break;
+	case (3): zFrom = 28; break;
+	case (4): zFrom = 38; break;
+	}
+	switch (hoogtes[to_stack - 1]) {
+	case (1): zTo = 20; break;
+	case (2): zTo = 30; break;
+	case (3): zTo = 40; break;
+	case (4): zTo = 50; break;
+	}
+	cout << from_stack << " " << to_stack << " " << diskNumber << endl;
+	switch (from_stack) {
+	case (1): yFrom = 50;  break;
+	case (2): yFrom = 0; break;
+	case (3): yFrom = -50; break;
+	}
+	switch (to_stack) {
+	case (1): yTo = 50; break;
+	case (2): yTo = 0; break;
+	case (3): yTo = -50; break;
+	}
+
+	cout << "Moving from " << yFrom << " to " << yTo << endl;
+	cout << "Stack from: " << hoogtes[from_stack - 1] << endl;
+	cout << "Stack to: " << hoogtes[to_stack - 1] << endl;
+	arm.move(x, yFrom, 100, 20);
+	arm.move(x, yFrom, zFrom, 10, 1);
+	arm.turnPumpON();
+	// Sleep(100);
+	arm.move(x, yFrom, 100, 20, 1);
+	arm.move(x, yTo, 100, 20);
+	arm.move(x, yTo, zTo, 10, 1);
+	arm.turnPumpOFF();
+	// Sleep(100);
+	arm.move(x, yTo, 100, 20);
+
+	hoogtes = nieuweHoogtes(from_stack, to_stack, hoogtes);
+	towerOfHanoi(arm, diskNumber - 1, other_stack, to_stack, from_stack, hoogtes);
+}
+
+
 void sorteerOpKleur(uArm arm, vector<vector<string>> kaarten, vector<vector<int>> huidigeStapel, vector<vector<int>> nieuweStapel) {
 	for (unsigned int i = 0; i < kaarten.size(); i++) {
 		for (unsigned int j = 0; j < kaarten[i].size(); j++) {
@@ -143,6 +274,13 @@ void draaiDriehoek(uArm arm) {
 
 int main() {
 	uArm arm("\\\\.\\COM8", true, 0);
+
+	vector<int> tower1 = { 200, 50 };
+	vector<int> tower2 = { 200, 0 };
+	vector<int> tower3 = { 200, -50 };
+	vector<int> hoogtes = { 4, 0 ,0 };
+
+
 	// arm.setMode(0);
 	//arm.calibreer();
 	//tekenPi(arm);
@@ -173,24 +311,28 @@ int main() {
 	arm.move(150, 100, 100, 20, 1);
 	arm.move(100, 150, 100, 20, 1);
 	*/
-	arm.move(180, 0, 150, 20, 1);
-	arm.move(270, 0, 150, 20, 1);
+	towerOfHanoi(arm, 4, 1, 2, 3,hoogtes);
+	/*
+	arm.move(200, 0, 50, 20);
+	arm.move(200, 0, 10, 20);
+	arm.turnPumpON();
+	arm.move(200, 0, 50, 20);
+	arm.move(200, 50, 10, 20);
+	arm.turnPumpOFF();
 	arm.move(270, 0, 80, 20, 1);
 	arm.move(270, 90, 80, 20, 1);
 	arm.move(270, -90, 80, 20, 1);
 	arm.move(220, -90, 3, 20, 1);
 	arm.move(220, 90, 3, 20, 1);
-
 	arm.move(120, 90, 3, 20, 1);
 	arm.move(120, -90, 3, 20, 1);
 	arm.move(220, -90, 3, 20, 1);
 	for (unsigned int i = 0; i < 100; i++) {
 		arm.move((200 + (i / 1.0)), 0, 150, 20, 1);
 	}
-	*/
 	// arm.move(, 100, 20, 3, 1);
 
-	/*
+	
 	arm.move(250, 0, 100, 10);
 	arm.turnPumpON();
 	arm.move(200, 90,60, 10);

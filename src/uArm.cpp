@@ -92,5 +92,7 @@ void uArm::performCommand(const std::string & command, bool limitSwitch){
 		if(verbose){
 			std::cout << command_with_n;
 		}
-		waitDone(command_number, limitSwitch);
+		if (command != "M2231 V1\n" && command != "M2231 V0\n") {
+			waitDone(command_number, limitSwitch);
+		}
 }
