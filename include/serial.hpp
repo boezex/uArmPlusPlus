@@ -75,7 +75,7 @@ class Serial {
 };
 #endif // Windows
 
-#ifdef __unix
+#if defined(__unix) || defined(__APPLE__)
 #include <errno.h>   /* ERROR Number Definitions           */
 #include <fcntl.h>   /* File Control Definitions           */
 #include <termios.h> /* POSIX Terminal Control Definitions */

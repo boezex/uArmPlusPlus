@@ -1,4 +1,4 @@
-#include "serial.hpp"
+#include "../include/serial.hpp"
 #include <iostream>
 #include <string>
 
@@ -63,9 +63,8 @@ Serial::Serial(const char *portName) {
 Serial::~Serial() {
     if (this->connected) {
         this->connected = false;
-		//FindClose(this->hSerial);
-        // CloseHandle(this->hSerial);
-    }	
+        CloseHandle(this->hSerial);
+    }
 }
 
 int Serial::readData(char *buffer, unsigned int size) {
@@ -117,7 +116,7 @@ void Serial::clearReadBuffer(){
 
 #endif // Windows
 
-#ifdef __unix
+#if defined(__unix) || defined(__APPLE__)
 Serial::Serial(const char *portName) {
     connected = false;
     struct termios SerialPortSettings;
@@ -156,7 +155,7 @@ Serial::Serial(const char *portName) {
     }
 }
 
-Serial::~Serial() {
+Serial::~Serial() {	
     if (this->connected) {
         this->connected = false;
     }
@@ -167,12 +166,17 @@ int Serial::readData(char *buffer, unsigned int size) {
     char response[1024];
     int i = 0;
 
-    while (c != '\r') {
-        if (read(file, &c, 1) > 0) {
-            response[i] = c;
-            i++;
+    while (c != '\n') {
+        if (read(file, &c, 1) > 0) 
+		{
+			if(c != '\r' && c != '\n')
+			{
+				response[i] = c;
+				i++;
+			}
         }
     }
+	response[i] = '\0'; 
     strcpy(buffer, response);
 
     return 1;

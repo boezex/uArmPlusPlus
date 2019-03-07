@@ -1,4 +1,4 @@
-#include "uArm.hpp"
+#include "../include/uArm.hpp"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -23,7 +23,7 @@ void uArm::calibreer() {
 	std::cout << "Positioneer de stift in de grijper, en druk op enter om verder te gaan";
 	std::cin.get();
 	closeClamp();
-	Sleep(2000);
+	sleep(2);
 }
 
 
@@ -68,19 +68,19 @@ float uArm::getAngle(int joint){
 
 //private:
 void uArm::waitDone(uint8_t command_number, bool limitSwitch){
-	conn.clearReadBuffer();
+	//conn.clearReadBuffer();
 	conn.readData(response, response_size);
 	while(!strstr(response, (std::to_string(command_number) + " ok").c_str())){
 		if(limitSwitch && strstr(response, "@6")){
 			break;
 		}
-		Sleep(200);
+		sleep(2);
 		conn.readData(response, response_size);
 	}
 	if(verbose){
 		std::cout << response << "\n";
 	}
-	conn.clearReadBuffer();
+	//conn.clearReadBuffer();
 }
 
 void uArm::performCommand(const std::string & command, bool limitSwitch){
@@ -92,7 +92,6 @@ void uArm::performCommand(const std::string & command, bool limitSwitch){
 		if(verbose){
 			std::cout << command_with_n;
 		}
-		if (command != "M2231 V1\n" && command != "M2231 V0\n") {
-			waitDone(command_number, limitSwitch);
-		}
+		//sleep(4);
+		waitDone(command_number, limitSwitch);
 }

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdlib.h>     //for using the function sleep
 #include "serial.hpp"
-#include <windows.h>
+
 
 
 
@@ -173,7 +173,7 @@ public:
 				conn.readData(response, response_size);
 			}
 		}
-		// setMode(mode);
+		 setMode(mode);
 	}
 };
 
